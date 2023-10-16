@@ -9,12 +9,12 @@ services:
     volumes:
       -  ./nginx/nginx.conf:/ect/nginx/nginx.conf:ro #configuration file that should be in local file
 
-  php:
+  #php:
 
-  mysql:
+  #mysql:
 
-  composer:
+  #composer:
 
-  artisan:
+  #artisan:
 
-  npm:
+  #npm:
