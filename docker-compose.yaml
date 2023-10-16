@@ -1,0 +1,20 @@
+version: "3.8"  #docker-compose version
+
+services:
+
+  server:
+    image: 'nginx:stable-apline'
+    ports: 
+      - '8000:80'
+    volumes:
+      -  ./nginx/nginx.conf:/ect/nginx/nginx.conf:ro #configuration file that should be in local file
+
+  #php:
+
+  #mysql:
+
+  #composer:
+
+  #artisan:
+
+  #npm:
