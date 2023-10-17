@@ -3,12 +3,15 @@ version: "3.8"  #docker-compose version
 services:
 
   server:
-    image: 'nginx:stable-apline'
+    image: 'nginx:stable-alpine'
     ports: 
       - '8000:80'
     volumes:
-      -  ./nginx/nginx.conf:/ect/nginx/nginx.conf:ro #configuration file that should be in local file
-
+      - ./src:/var/www/html
+      - ./nginx/nginx.conf:/ect/nginx/conf.d/default.conf:ro #configuration file that should be in local file
+    depends_on:
+      - php
+      - mysql
   php:
     build:      #The build is the image for the container. Context is the folder and dockerfile the file to build container
       context: ./dockerfiles
