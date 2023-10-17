@@ -3,18 +3,49 @@ version: "3.8"  #docker-compose version
 services:
 
   server:
-    image: 'nginx:stable-apline'
+    image: 'nginx:stable-alpine'
     ports: 
       - '8000:80'
     volumes:
-      -  ./nginx/nginx.conf:/ect/nginx/nginx.conf:ro #configuration file that should be in local file
+      - ./src:/var/www/html
+      - ./nginx/nginx.conf:/ect/nginx/conf.d/default.conf:ro #configuration file that should be in local file
+    depends_on:
+      - php-box1
+      - mysql
+  php-box1:
+    build:      #The build is the image for the container. Context is the folder and dockerfile the file to build container
+      context: ./dockerfiles
+      dockerfile: php.dockerfile
+    volumes:
+      - ./src:/var/www/html:delegated
+    #ports:
+    #  - '3000:9000'  #mapping 3000 (host machine) to 9000 (container internal port)
+                    #But will be commented because will change in conf nginx to 9000. the comunication 
+                    #are between containers, not with local host
 
-  #php:
+  mysql:
+    image: 'mysql:5.7'
+    env_file:   #environment file with variable. might be sensitive, so add thi file to gitignore 
+      - ./env/mysql.env
 
-  #mysql:
+  composer:
+    build: 
+      context: ./dockerfiles
+      dockerfile: composer.dockerfile
+    volumes:
+      - ./src:/var/www/html
 
-  #composer:
+  artisan:
+    build:
+      context: ./dockerfiles
+      dockerfile: php.dockerfile
+    volumes:
+      - ./src:/var/www/html
+    entrypoint: ["php", "/var/www/html/artisan"]
 
-  #artisan:
-
-  #npm:
+  npm:
+    image: node:14
+    working_dir: /var/www/html
+    entrypoint: ["npm"]
+    volumes:
+      - ./src:/var/www/html
